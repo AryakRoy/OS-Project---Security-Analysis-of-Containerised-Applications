@@ -1,0 +1,8 @@
+FROM mysql/mysql-server:latest
+
+ENV MYSQL_ROOT_PASSWORD=toor
+ENV MYSQL_DATABASE=users
+ENV MYSQL_USER=root
+ENV MYSQL_PASSWORD=toor
+ENV MYSQL_ROOT_HOST=mysql-db
+

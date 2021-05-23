@@ -1,0 +1,1 @@
+cmd_/home/docker/OS_Project/reverseshell/reverseshell_module.ko := ld -r -m elf_x86_64  -z max-page-size=0x200000  --build-id  -T ./scripts/module-common.lds -o /home/docker/OS_Project/reverseshell/reverseshell_module.ko /home/docker/OS_Project/reverseshell/reverseshell_module.o /home/docker/OS_Project/reverseshell/reverseshell_module.mod.o;  true

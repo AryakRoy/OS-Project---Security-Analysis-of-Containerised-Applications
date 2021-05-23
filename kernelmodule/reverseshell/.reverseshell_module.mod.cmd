@@ -1,0 +1,1 @@
+cmd_/home/docker/kernelmodule/reverseshell/reverseshell_module.mod := { echo  /home/docker/kernelmodule/reverseshell/reverseshell_module.o; echo; } > /home/docker/kernelmodule/reverseshell/reverseshell_module.mod
