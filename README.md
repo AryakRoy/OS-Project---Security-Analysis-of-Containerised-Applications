@@ -12,7 +12,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 
 ## Attack Vectors
 
-### Modifying Kernel Space using --privileged flag
+- ### Modifying Kernel Space using --privileged flag
 
 > This attack is to simulate Container Breakout and the process through which an attacker who has gained access of a Container running on a System can get access to a system can load a kernel module on to the Host Kernel Space through the Container to get a reverse shell session of the Host file System mounted on the root directory.
 
