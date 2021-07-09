@@ -121,3 +121,96 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 **Result**
 
 > Here it is set to max which means we can fork unlimited processes from this container which can be catastrophic if the container is attacked and the attacker decides to run a fork bomb attack to exhaust all System resources which might result in System failure, which can be a financial disaster in Multinational Companies providing services.
+
+## Defense Mechanisms
+
+### Apparmor Profile
+
+> AppArmor or Application Armor is a Linux Security module. It allows us to limit programs capabilities using Apparmor profiles, and can be used to protect Docker from various security threats. To use it with Docker each Docker container must have its own Apparmor Security Profile. When we start a container, we must provide a custom Apparmor Profile to it and Docker expects to find an Apparmor policy loaded and enforced.
+
+**Steps**
+
+1.  Navigate to the apparmor directory using the command:
+    ```bash
+    cd apparmor
+    ```
+2. Load the apparmor profile using the command
+   ```bash
+   sudo apparmor_parser -r -W apparmor-profile
+   ```
+3. Start a container by specifying apparmor as the security option and apparmor-profile as the custom apparmor profile using the command:
+   ```bash
+   docker run -it --security-opt apparmor=apparmor-profile alpine sh
+   ```
+
+**Result**
+
+> As we can observe that as specified in the apparmor-profile we cannot write anything in the /tmp directory neither can we perform any operation on the /etc/passwd file but since there were no rules specified for the /etc/shadow file we can view its contents.
+
+---
+
+### Seccomp Profiles
+
+> Seccomp is a Linux security feature that can filter system calls issued by a program and acts as a firewall for them. Seccomp profiles can be specified for containers specifying what system calls can be issued from within the container.
+
+**Steps**
+
+1. Navigate to the seccomp directory
+   ```bash
+   cd seccomp
+   ```
+2. Start a container with seccomp as the security option and seccomp-profile.json as the custom seccomp profile to be used using the command:
+   ```bash
+   docker run -it --security-opt seccomp=seccomp-profile.json alpine sh
+   ```
+   
+**Result**
+
+> As it can be observed that the system call for chmod was denied permission as it has been explicitly specified in the seccomp-profile.json whereas chown was successful as there are no specifications for it.
+
+---
+
+### Capability Specifications
+
+> We can add or drop specific capabilities that the docker container holds, to ensure security and no unexpected behaviour.
+
+**Steps**
+
+1. Start a docker container by explicitly dropping the capability of chwon using the following command:
+   ```bash
+   docker run --rm -it --cap-drop CHOWN alpine sh
+   ```
+2. Attempt to create a new file using touch and using chown on it.
+   ```bash
+   touch /tmp/file.txt
+   chown nobody /tmp/file.txt
+   ```
+ 
+**Result**
+
+> The result is evident that the chown capability is not provided to the container as the system call failed. This can be used to specify capabilities to be added and removed from docker images while building containers rather than having to provide separate seccomp profiles for each container by making different images according to the requirements.
+
+---
+
+### Cgroup PIDs Limit
+
+> To prevent Fork bomb attacks on Host systems a Process limit can be specified for containers using the --pids-limit flag in Docker. They reflect changes in the pids.max file of the cgroup directory of the container.
+
+**Steps**
+
+1. Start a container shell and specify the pids limit as 6 using the command:
+   ```bash
+   docker run -it --pids-limit 6 alpine sh
+   ```
+2. On a new Terminal Tab run the command:
+   ```bash
+   docker stats
+   ```
+3. Run 6 sleep proccesses using the command:
+   ```bash
+   sleep 600 & sleep 600 & sleep 600 & sleep 600 & sleep 600 & sleep 600
+   ```
+   
+**Result**
+
+> It can be observed that the PIDS changed from 1 to 6 after running the sleep commands. Each command was executed one after the other so it forked for the first 5 sleep commands but when it reached its maximum limit it raised an error saying Resource unavailable. This method can be used for mitigating Fork bomb attacks on Docker Containers and prevents system resource Exhaustion and can also help in preventing against DDoS Attacks.
