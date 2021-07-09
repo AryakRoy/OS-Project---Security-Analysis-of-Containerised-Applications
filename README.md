@@ -124,7 +124,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 
 ## Defense Mechanisms
 
-### Apparmor Profile
+### 1. Apparmor Profile
 
 > AppArmor or Application Armor is a Linux Security module. It allows us to limit programs capabilities using Apparmor profiles, and can be used to protect Docker from various security threats. To use it with Docker each Docker container must have its own Apparmor Security Profile. When we start a container, we must provide a custom Apparmor Profile to it and Docker expects to find an Apparmor policy loaded and enforced.
 
@@ -149,7 +149,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 
 ---
 
-### Seccomp Profiles
+### 2. Seccomp Profiles
 
 > Seccomp is a Linux security feature that can filter system calls issued by a program and acts as a firewall for them. Seccomp profiles can be specified for containers specifying what system calls can be issued from within the container.
 
@@ -170,7 +170,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 
 ---
 
-### Capability Specifications
+### 3. Capability Specifications
 
 > We can add or drop specific capabilities that the docker container holds, to ensure security and no unexpected behaviour.
 
@@ -192,7 +192,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 
 ---
 
-### Cgroup PIDs Limit
+### 4. Cgroup PIDs Limit
 
 > To prevent Fork bomb attacks on Host systems a Process limit can be specified for containers using the --pids-limit flag in Docker. They reflect changes in the pids.max file of the cgroup directory of the container.
 
