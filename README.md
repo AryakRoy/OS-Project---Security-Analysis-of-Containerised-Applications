@@ -12,7 +12,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 
 ## Attack Vectors
 
-### Modifying Kernel Space using --privileged flag
+1. ### Modifying Kernel Space using --privileged flag
 
 > This attack is to simulate Container Breakout and the process through which an attacker who has gained access of a Container running on a System can get access to a system can load a kernel module on to the Host Kernel Space through the Container to get a reverse shell session of the Host file System mounted on the root directory.
 
@@ -53,7 +53,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 
 ---
 
-### Container Breakout through Docker Socket
+2. ### Container Breakout through Docker Socket
 
 > This attack is to simulate how container breakout can be performed using docker.sock mount through which an attacker that has access to the Container can start another Container mounted on the host Root directory to access the Host file system.
 
@@ -83,7 +83,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 
 ---
 
-### Privilege Escalation using volume mounts
+3. ### Privilege Escalation using volume mounts
 
 > Docker daemon requires root privileges to perform some if it’s operations so it runs with root privileges. If a user is part of the Docker Group it is possible for them to elevate their privileges to root. This can be done through Docker volumes and setuid binaries. Docker volumes are a way to provide persistent storage to Docker Containers. When a binary is created and a setuid bit is set on it, it continues to run as root even when a low privileged user uses it.
 
@@ -105,7 +105,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
 
 ---
 
-### Control Group Vulnerability
+4. ### Control Group Vulnerability
 
 > Control groups are a feature of the Linux Kernel. It allows to limit the access processes and containers have to system resources such as CPU, RAM, IOPS and network. Here our concern is to limit the PIDs to prevent fork bomb attack.
 
