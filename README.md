@@ -27,7 +27,7 @@ This aim for this project is to conduct a Security Analysis of Containerized App
    ```bash
    python3 -m http.server
    ```
-3.  On a New Terminal Tab Run a Base container (here alpine) with a privileged flag and start a shell session in it using the command:
+3. On a New Terminal Tab Run a Base container (here alpine) with a privileged flag and start a shell session in it using the command:
    ```bash
    docker run --rm --privileged -it alpine sh
    ```
@@ -76,3 +76,48 @@ This aim for this project is to conduct a Security Analysis of Containerized App
    ```bash
    docker -H unix:///var/run/docker.sock run -it -v /:/test:ro -t alpine sh
    ```
+
+**Result**
+
+> The container started from inside the namespace of another container mounted on the root directory of the host and stored in the test directory of the container file system provided a medium to access the host file system. It is a Read Only File System so it can be classified as a Low graded High Level Vulnerability as it has access to host file system data but, cannot make any modifications.
+
+---
+
+### Privilege Escalation using volume mounts
+
+> Docker daemon requires root privileges to perform some if it’s operations so it runs with root privileges. If a user is part of the Docker Group it is possible for them to elevate their privileges to root. This can be done through Docker volumes and setuid binaries. Docker volumes are a way to provide persistent storage to Docker Containers. When a binary is created and a setuid bit is set on it, it continues to run as root even when a low privileged user uses it.
+
+**Steps**
+
+1. Change the directory to privesc and build the Docker image with the command:
+   ```bash
+   docker build --rm -t privesc .
+   ```
+2. Build the Docker container by mounting the */tmp* directory of the host to the */shared* directory of the Container and executing the shellscript.sh using the command:
+   ```bash
+   docker run -v /tmp:/shared/ privesc:latest /bin/sh shellscript.sh
+   ```
+3. Navigate to the /tmp directory and execute the shell which gives us a bash shell session with root privileges
+
+**Result**
+
+> The reason it will be possible to gain root privileges is because a volume was mounted from the host to the container and containers run with root privileges by default. The shell executable set the user id to 0 and gave us a bash shell so essentially we setuid binary of a volume which appears as the setuid binary of the host.
+
+---
+
+### Control Group Vulnerability
+
+> Control groups are a feature of the Linux Kernel. It allows to limit the access processes and containers have to system resources such as CPU, RAM, IOPS and network. Here our concern is to limit the PIDs to prevent fork bomb attack.
+
+**Steps**
+
+1. Start a base alpine container using the command:
+   ```bash
+   docker run -itd --name=cgroups alpine
+   ```
+2. Navigate to the directory names `/sys/fs/cgroup/pids/docker/` followed by the SHA key returned in Step 1
+3.  Examine the contents of the pids.max file
+
+**Result**
+
+> Here it is set to max which means we can fork unlimited processes from this container which can be catastrophic if the container is attacked and the attacker decides to run a fork bomb attack to exhaust all System resources which might result in System failure, which can be a financial disaster in Multinational Companies providing services.
