@@ -1,4 +1,4 @@
-# Security Analysis of Containerizd Applications
+# Security Analysis of Containerized Applications in a Virtualized Environment
 
 > A security analysis conducted on containerised applications in virtualised environments.
 
